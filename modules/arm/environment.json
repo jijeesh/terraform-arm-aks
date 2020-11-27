@@ -1,0 +1,97 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "service_principal_client_id": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Service Principal Client Id"
+            }
+        },
+        "service_principal_secret": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Service Principal Secret"
+            }
+        },
+        "ssh_rsa_public_key": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "SSH Public Key"
+            }
+        },
+        "aks_kubernetes_version": {
+            "defaultValue": "1.18.10",
+            "type": "String",
+            "metadata": {
+                "description": "AKS Version"
+            }
+        },
+        "aks_agent_vmsize": {
+            "type": "string",
+            "defaultValue": "Standard_D2_v2",
+            "metadata": {
+                "description": "The size of the Virtual Machine."
+            }
+        },
+        "aks_max_pods": {
+            "type": "int",
+            "defaultValue": "30",
+            "metadata": {
+                "description": "Maximum number of pods that can run on a node"
+            }
+        },
+        "environment": {
+            "defaultValue": "test",
+            "type": "String",
+            "metadata": {
+                "description": "Environment name"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {
+        "name_prefix": "[concat('jijeesh-', parameters('environment'))]",
+        "aks_name": "[concat(variables('name_prefix'),'-aks')]"
+    },
+    "resources": [
+        {
+            "name": "[variables('aks_name')]",
+            "type": "Microsoft.ContainerService/managedClusters",
+            "apiVersion": "2020-02-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "kubernetesVersion": "[parameters('aks_kubernetes_version')]",
+                "dnsPrefix": "dnsprefix",
+                "agentPoolProfiles": [
+                    {
+                        "name": "agentpool",
+                        "count": "1",
+                        "vmSize": "[parameters('aks_agent_vmsize')]",
+                        "osType": "Linux",
+                        "maxPods": "[parameters('aks_max_pods')]",
+                        "storageProfile": "ManagedDisks"
+                    }
+                ],
+                "linuxProfile": {
+                    "adminUsername": "jijeesh",
+                    "ssh": {
+                        "publicKeys": [
+                            {
+                                "keyData": "[parameters('ssh_rsa_public_key')]"
+                            }
+                        ]
+                    }
+                },
+                "servicePrincipalProfile": {
+                    "clientId": "[parameters('service_principal_client_id')]",
+                    "secret": "[parameters('service_principal_secret')]"
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

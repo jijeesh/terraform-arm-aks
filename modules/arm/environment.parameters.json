@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "service_principal_client_id": {
+            "value": "#{service_principal_client_id}#"
+        },
+        "service_principal_secret": {
+            "value": "#{service_principal_secret}#"
+        },
+        "ssh_rsa_public_key": {
+            "value": "#{ssh_rsa_public_key}#"
+        },
+        "aks_kubernetes_version":{
+            "value": "#{aks_kubernetes_version}#"
+        },
+
+        "aks_agent_vmsize": {
+            "value": "#{aks_agent_vmsize}#"
+        },
+
+        "aks_max_pods": {
+            "value": #{aks_max_pods}#
+        },
+        "environment": {
+            "value": "#{environment}#"
+        }
+    }
+
+}
